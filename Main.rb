@@ -1,6 +1,10 @@
-class Games
+require_relative "board"
+require_relative "player"
+
+class Main
   def initialize
     @board = Board.new
+    @move_counts = 0
     enter_players
   end
 
@@ -21,9 +25,11 @@ class Games
   end
 
   def enter_player_move
-    p active_player.name + "enter your move: (eg. B2) "
+    p active_player.name + ", enter your move: (eg. B2) "
     move = gets.chomp
     @board.replace_grid(move, active_player.sign)
+    @board.game_over?(@move_counts, active_player)
+    @move_counts += 1
     switch_active_player
   end
 
@@ -42,39 +48,4 @@ class Games
   end
 end
 
-class Board
-  def initialize
-    @grids = ["A1", "A2", "A3", "B1", "B2", "B3", "C1", "C2", "C3"]
-  end
-
-  def print_board
-    p @grids[0] + " | " + @grids[1] + " | " + @grids[2]
-    p "------------"
-    p @grids[3] + " | " + @grids[4] + " | " + @grids[5]
-    p "------------"
-    p @grids[6] + " | " + @grids[7] + " | " + @grids[8]
-  end
-
-  def replace_grid(move, sign)
-    @grids.map! do |elt|
-      if elt == move
-        elt.replace(sign)
-      else
-        elt
-      end
-    end
-    print_board
-  end
-end
-
-class Player
-  attr_accessor :name, :active, :sign
-
-  def initialize(name, active, sign)
-    @name = name
-    @active = active
-    @sign = sign
-  end
-end
-
-new_game = Games.new
+new_game = Main.new
